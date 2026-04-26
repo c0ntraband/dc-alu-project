@@ -1,0 +1,16 @@
+Control Unit Signals
+
+The control unit decodes ALU_Sel into one-hot datapath enables.
+
+ALU_Sel = 0000 -> c_add = 1
+ALU_Sel = 0001 -> c_sub = 1
+ALU_Sel = 0010 -> c_mul = 1
+ALU_Sel = 0011 -> c_div = 1
+ALU_Sel = 0100 -> c_and = 1
+ALU_Sel = 0101 -> c_or  = 1
+ALU_Sel = 0110 -> c_xor = 1
+ALU_Sel = 0111 -> c_shl = 1
+ALU_Sel = 1000 -> c_shr = 1
+
+Any other ALU_Sel code makes all control signals 0.
+The datapath output mux then returns 8'b00000000 and V = 0.
