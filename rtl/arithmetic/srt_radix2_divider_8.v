@@ -63,7 +63,6 @@ module srt_radix2_unsigned_divider_8 (
     wire [8:0] A7;
     wire [8:0] A8;
     wire [8:0] corrected_A;
-    wire [8:0] final_A;
     wire [7:0] Q0;
     wire [7:0] Q1;
     wire [7:0] Q2;
@@ -75,6 +74,7 @@ module srt_radix2_unsigned_divider_8 (
     wire [7:0] Q8;
     wire       unused_cout;
     wire       unused_carry_into_msb;
+    wire       unused_corrected_A_sign;
 
     assign A0 = 9'b000000000;
     assign Q0 = dividend;
@@ -98,15 +98,15 @@ module srt_radix2_unsigned_divider_8 (
         .carry_into_msb(unused_carry_into_msb)
     );
 
-    mux2_bus #(.WIDTH(9)) choose_remainder (
-        .d0(A8),
-        .d1(corrected_A),
+    mux2_bus #(.WIDTH(8)) choose_remainder (
+        .d0(A8[7:0]),
+        .d1(corrected_A[7:0]),
         .sel(A8[8]),
-        .y(final_A)
+        .y(remainder)
     );
 
-    assign quotient  = Q8;
-    assign remainder = final_A[7:0];
+    assign unused_corrected_A_sign = corrected_A[8];
+    assign quotient                = Q8;
 endmodule
 
 module signed_srt_radix2_divider_8 (

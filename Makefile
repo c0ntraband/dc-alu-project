@@ -1,5 +1,8 @@
-IVERILOG ?= iverilog
-VVP ?= vvp
+OSS_CAD_SUITE ?= $(HOME)/.local/oss-cad-suite
+IVERILOG ?= $(OSS_CAD_SUITE)/bin/iverilog
+VVP ?= $(OSS_CAD_SUITE)/bin/vvp
+VERILATOR ?= $(OSS_CAD_SUITE)/bin/verilator
+YOSYS ?= $(OSS_CAD_SUITE)/bin/yosys
 BUILD_DIR ?= build
 RTL_SOURCES := \
 	rtl/common/full_adder.v \
@@ -16,10 +19,16 @@ RTL_SOURCES := \
 	rtl/datapath/alu_datapath.v \
 	rtl/alu8.v
 
-.PHONY: run clean
+.PHONY: run lint synth-check clean
 
 run: $(BUILD_DIR)/alu8_tb.vvp
 	$(VVP) $<
+
+lint:
+	$(VERILATOR) --lint-only -Wall -Wno-DECLFILENAME $(RTL_SOURCES) tb/alu8_tb.v
+
+synth-check:
+	$(YOSYS) -p "read_verilog -sv $(RTL_SOURCES); hierarchy -top alu8; proc; opt; check"
 
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)

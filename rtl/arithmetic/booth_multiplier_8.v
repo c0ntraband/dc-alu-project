@@ -123,6 +123,8 @@ module signed_booth_radix8_multiplier_8 (
     wire        unused_cout_final;
     wire        unused_cim01;
     wire        unused_cim_final;
+    wire        unused_pp1_shift_top;
+    wire        unused_pp2_shift_top;
 
     assign group0 = {a[2], a[1], a[0], 1'b0};
     assign group1 = {a[5], a[4], a[3], a[2]};
@@ -146,9 +148,12 @@ module signed_booth_radix8_multiplier_8 (
         .partial_product(pp2)
     );
 
-    assign shifted_pp0 = pp0;
-    assign shifted_pp1 = {pp1[14:0], 3'b000};
-    assign shifted_pp2 = {pp2[11:0], 6'b000000};
+    // Fixed-width left shifts drop the bits that move past bit 17.
+    assign unused_pp1_shift_top = |pp1[17:15];
+    assign unused_pp2_shift_top = |pp2[17:12];
+    assign shifted_pp0          = pp0;
+    assign shifted_pp1          = {pp1[14:0], 3'b000};
+    assign shifted_pp2          = {pp2[11:0], 6'b000000};
 
     ripple_adder #(.WIDTH(18)) add_low_groups (
         .a(shifted_pp0),

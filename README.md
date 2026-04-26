@@ -1,9 +1,5 @@
 # 8-bit-ALU-SIMULATOR
 
-You will design and simulate an 8-bit Arithmetic Logic Unit (ALU) using a
-Hardware Description Language (HDL). The project is completed structurally,
-with the operations built from smaller hardware blocks.
-
 # Project Requirements
 
 The ALU supports:
@@ -89,6 +85,18 @@ operands to magnitudes, divides them, and reapplies the sign to the quotient.
 
 Logical shifts use `B[2:0]` as the shift amount.
 
+# Open Source Tool Setup
+
+This project is set up to use OSS CAD Suite from:
+
+```sh
+/home/karina/.local/oss-cad-suite
+```
+
+The suite includes Icarus Verilog, Verilator, Yosys, GTKWave, GHDL,
+SymbiYosys, and solver tools. The Makefile points to this local install, so
+the commands below work without installing system packages.
+
 # Run the Testbench
 
 With Icarus Verilog:
@@ -101,7 +109,7 @@ Manual command:
 
 ```sh
 mkdir -p build
-iverilog -g2012 -o build/alu8_tb.vvp \
+/home/karina/.local/oss-cad-suite/bin/iverilog -g2012 -o build/alu8_tb.vvp \
   tb/alu8_tb.v \
   rtl/common/full_adder.v \
   rtl/common/ripple_adder.v \
@@ -116,7 +124,34 @@ iverilog -g2012 -o build/alu8_tb.vvp \
   rtl/control/alu_flag_unit.v \
   rtl/datapath/alu_datapath.v \
   rtl/alu8.v
-vvp build/alu8_tb.vvp
+/home/karina/.local/oss-cad-suite/bin/vvp build/alu8_tb.vvp
+```
+
+# Debug and Check Commands
+
+Run the self-checking simulation:
+
+```sh
+make run
+```
+
+Run Verilator lint:
+
+```sh
+make lint
+```
+
+Run a Yosys structural check:
+
+```sh
+make synth-check
+```
+
+If you want the tools available in a terminal session, source the suite
+environment:
+
+```sh
+source /home/karina/.local/oss-cad-suite/environment
 ```
 
 With ModelSim/Questa:
